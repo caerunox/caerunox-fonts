@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#121a29">
+  <title>Caerunox · Font specimens</title>
+  <link rel="stylesheet" href="./fonts.css">
+  <style>
+    :root { color-scheme: dark; --ink:#f0e6fa; --muted:#c6bcd4; --accent:#d7c2ef; --border:#6b6481; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#121a29; color:var(--ink); font:1.15rem/1.6 Georgia,serif; }
+    main { width:min(960px,calc(100% - 40px)); margin:0 auto; padding:64px 0 40px; }
+    header { text-align:center; margin-bottom:40px; }
+    .eyebrow,.label,.status,code { font-family:system-ui,sans-serif; }
+    .eyebrow { color:var(--muted); font-size:.75rem; letter-spacing:.22em; text-transform:uppercase; }
+    h1 { margin:8px 0 12px; font-size:clamp(2rem,5vw,3.5rem); font-weight:400; }
+    .divider { display:flex; align-items:center; gap:20px; max-width:240px; margin:22px auto; color:var(--accent); }
+    .divider::before,.divider::after { content:""; height:1px; flex:1; background:var(--border); }
+    #font-summary { color:var(--muted); margin:0; }
+    article { padding:28px 32px; border:1px solid var(--border); border-radius:12px; background:#202638; margin-top:24px; }
+    .card-top { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
+    .label { font-size:.9rem; font-weight:600; margin:0; }
+    .status { color:var(--muted); font-size:.8rem; padding:3px 10px; border:1px solid var(--border); border-radius:20px; }
+    .status[data-state="loaded"] { color:#d5eddf; border-color:#709083; }
+    .status[data-state="error"] { color:#ffd5df; border-color:#b87c95; }
+    .specimen { margin:22px 0 12px; overflow-wrap:anywhere; }
+    .giove { font-family:'Caerunox Giove',serif; font-size:clamp(1.8rem,5vw,3.25rem); font-weight:400; line-height:1.3; }
+    .regular,.italic { font-family:'IM Fell English',serif; font-size:clamp(1.5rem,3vw,2rem); font-weight:400; }
+    .italic { font-style:italic; }
+    .characters { color:var(--muted); margin:0 0 14px; }
+    code { color:var(--muted); font-size:.75rem; word-break:break-word; }
+    footer { color:var(--muted); text-align:center; font-size:.9rem; padding-top:28px; }
+    a { color:var(--accent); text-underline-offset:3px; }
+    a:hover { color:white; }
+    @media(max-width:520px) { main { padding-top:36px; } article { padding:22px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="eyebrow">Caerunox · Type library</div>
+      <h1>Font specimens</h1>
+      <div class="divider" aria-hidden="true">✧</div>
+      <p id="font-summary" role="status">Checking font files…</p>
+      <noscript><p>Enable JavaScript to run the font loading check.</p></noscript>
+    </header>
+
+    <article>
+      <div class="card-top"><h2 class="label">Giove</h2><span id="status-giove" class="status">Checking…</span></div>
+      <p class="specimen giove">KIRAN | CAERUNOX</p>
+      <p class="characters giove" style="font-size:1.5rem">What daylight forgets</p>
+      <code>font-family: 'Caerunox Giove', serif; font-weight: 400;</code>
+    </article>
+
+    <article>
+      <div class="card-top"><h2 class="label">IM Fell English · Regular</h2><span id="status-regular" class="status">Checking…</span></div>
+      <p class="specimen regular">Stories written in the quiet between dusk and dawn.</p>
+      <p class="characters regular" style="font-size:1.25rem">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>abcdefghijklmnopqrstuvwxyz · 0123456789</p>
+      <code>font-family: 'IM Fell English', serif; font-style: normal; font-weight: 400;</code>
+    </article>
+
+    <article>
+      <div class="card-top"><h2 class="label">IM Fell English · Italic</h2><span id="status-italic" class="status">Checking…</span></div>
+      <p class="specimen italic">What daylight forgets, the night remembers.</p>
+      <p class="characters italic" style="font-size:1.25rem">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>abcdefghijklmnopqrstuvwxyz · 0123456789</p>
+      <code>font-family: 'IM Fell English', serif; font-style: italic; font-weight: 400;</code>
+    </article>
+
+    <footer>
+      <a href="./fonts.css">Stylesheet</a> · <a href="./README.md">Usage and provenance</a> · <a href="./licenses/IM-Fell-English-OFL.txt">IM Fell English license</a>
+      <p>Giove is proprietary and hosted under the site owner's webfont license.<br>IM Fell English is licensed under the SIL Open Font License 1.1.</p>
+    </footer>
+  </main>
+  <script>
+    (async function checkFonts() {
+      const summary = document.getElementById('font-summary');
+      const faces = [
+        { id: 'giove', font: 'normal 400 24px "Caerunox Giove"', text: 'KIRAN | CAERUNOX' },
+        { id: 'regular', font: 'normal 400 24px "IM Fell English"', text: 'Stories at dusk' },
+        { id: 'italic', font: 'italic 400 24px "IM Fell English"', text: 'The night remembers' }
+      ];
+      if (!document.fonts) {
+        summary.textContent = 'Font loading checks are unavailable in this browser.';
+        faces.forEach(({id}) => { document.getElementById('status-' + id).textContent = 'Check unavailable'; });
+        return;
+      }
+      await document.fonts.ready;
+      const results = await Promise.all(faces.map(async ({id, font, text}) => {
+        const status = document.getElementById('status-' + id);
+        try {
+          const loaded = await document.fonts.load(font, text);
+          const ok = loaded.length > 0 && loaded.every(face => face.status === 'loaded') && document.fonts.check(font, text);
+          status.textContent = ok ? 'Loaded' : 'Font unavailable';
+          status.dataset.state = ok ? 'loaded' : 'error';
+          return ok;
+        } catch (error) {
+          status.textContent = 'Loading failed';
+          status.dataset.state = 'error';
+          return false;
+        }
+      }));
+      const count = results.filter(Boolean).length;
+      summary.textContent = count === faces.length ? 'All 3 font faces loaded successfully.' : count + ' of 3 font faces loaded. Check the font paths and stylesheet.';
+    }());
+  </script>
+</body>
+</html>
